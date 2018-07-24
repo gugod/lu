@@ -1,0 +1,123 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+sub MAIN {
+    my ($command, @args) = @_;
+    $command ||= 'help';
+    my $cb = __PACKAGE__->can("run_${command}");
+    die "Unknown sub-command: $command\n" unless $cb;
+    $cb->(@args);
+    return 0;
+}
+exit MAIN(@ARGV);
+
+sub run_help {
+    print "cat something.txt | lu sum\n";
+}
+
+sub run_seq {
+    my ($range) = @_;
+    my ($lower, $upper) = (0, undef);
+    if ($range =~ m/\A (\d+) \.\. (\d+) \z/x) {
+        ($lower, $upper) = ($1, $2);
+    }
+
+    if (defined($lower) && defined($upper)) {
+        for (my $n = $lower; $n < $upper; $n++) {
+            print "$n\n";
+        }
+    } else {
+        for (my $n = $lower; $n < $upper; $n++) {
+            print "$n\n";
+        }
+    }
+}
+
+sub run_random {
+    my ($limit) = @_;
+    $limit ||= 1;
+    while(<STDIN>) {
+        print rand($limit) . "\n";
+    }
+}
+
+sub run_sum {
+    my ($bucket_size) = @_;
+    if ($bucket_size) {
+        my $sum = 0;
+        my $n = 0;
+        while (<STDIN>) {
+            chomp;
+            $sum += $_;
+            if (++$n == $bucket_size) {
+                print "$sum\n";
+                $sum = 0;
+                $n = 0;
+            }
+        }
+        print "$sum\n" if $sum != 0;
+    } else {
+        my $sum = 0;
+        while (<STDIN>) {
+            chomp;
+            $sum += $_;
+        }
+        print "$sum\n" if $sum != 0;
+    }
+}
+
+sub run_cusum {
+    my ($bucket_size) = @_;
+    if ($bucket_size) {
+        my $sum = 0;
+        my $n = 0;
+        while (<STDIN>) {
+            chomp;
+            $sum += $_;
+            print "$sum\n";
+
+            if (++$n == $bucket_size) {
+                $sum = 0;
+                $n = 0;
+            }
+        }
+        print "$sum\n";
+    } else {
+        my $sum = 0;
+        while (<STDIN>) {
+            chomp;
+            $sum += $_;
+            print "$sum\n";
+        }
+        print "$sum\n";
+    }
+}
+
+sub run_dedupe {
+    my ($bucket_size) = @_;
+    if ($bucket_size) {
+        my %seen;
+        keys %seen = $bucket_size;
+        my $n = 0;
+        while (<STDIN>) {
+            chomp;
+            my $k = $_;
+            unless ($seen{$k}) {
+                print "$k\n";
+                $seen{$k} = 1;
+            }
+            if (++$n == $bucket_size) {
+                %seen = ();
+            }
+        }
+    } else {
+        my %seen;
+        while (<STDIN>) {
+            chomp;
+            next if $seen{$_};
+            $seen{$_} = 1;
+            print "$_\n";
+        }
+    }
+}
