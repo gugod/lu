@@ -164,3 +164,24 @@ sub run_minmax {
         print "$min\n$max\n";
     }
 }
+
+sub run_pick {
+    my ($n) = @_;
+
+    my $ln = 1;
+    my @picked;
+
+    while (<STDIN>) {
+        chomp;
+        $ln++;
+        if (@picked < $n) {
+            push @picked, $_;
+        } else {
+            my $x = int rand($ln);
+            if ($x < $n) {
+                $picked[$x] = $_;
+            }
+        }
+    }
+    print "$_\n" for @picked;
+}
