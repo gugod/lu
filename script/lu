@@ -121,3 +121,46 @@ sub run_dedupe {
         }
     }
 }
+
+sub run_minmax {
+    my ($bucket_size) = @_;
+    if ($bucket_size) {
+        my $min = <STDIN>;
+        chomp($min);
+        my $max = <STDIN>;
+        if (defined($max)) {
+            chomp($max);
+        } else {
+            $max = $min;
+        }
+
+        my $n = 0;
+        while (<STDIN>) {
+            chomp;
+            $min = $_ if $_ < $min;
+            $max = $_ if $_ > $max;
+            if (++$n == $bucket_size) {
+                print "$min\n$max\n";
+                $min = $max = $_;
+                $n = 0;
+            }
+        }
+        print "$min\n$max\n";
+    } else {
+        my $min = <STDIN>;
+        chomp($min);
+        my $max = <STDIN>;
+        if (defined($max)) {
+            chomp($max);
+        } else {
+            $max = $min;
+        }
+
+        while (<STDIN>) {
+            chomp;
+            $min = $_ if $_ < $min;
+            $max = $_ if $_ > $max;
+        }
+        print "$min\n$max\n";
+    }
+}
