@@ -56,14 +56,14 @@ sub run_sum {
                 $n = 0;
             }
         }
-        print "$sum\n" if $sum != 0;
+        print "$sum\n" if $n != 0;
     } else {
         my $sum = 0;
         while (<STDIN>) {
             chomp;
             $sum += $_;
         }
-        print "$sum\n" if $sum != 0;
+        print "$sum\n";
     }
 }
 
