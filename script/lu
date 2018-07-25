@@ -185,3 +185,29 @@ sub run_pick {
     }
     print "$_\n" for @picked;
 }
+
+sub run_tsv {
+    my ($bucket_size) = @_;
+    $bucket_size ||= 1;
+
+    my $n = 0;
+    my @bucket;
+    while (<STDIN>) {
+        chomp;
+        push @bucket, $_;
+        if (++$n == $bucket_size) {
+            print join("\t", @bucket) . "\n";
+            @bucket = ();
+            $n = 0;
+        }
+    }
+    print join("\t", @bucket) . "\n" if @bucket;
+}
+
+sub run_untsv {
+    while (<STDIN>) {
+        chomp;
+        my @values = split(/\t/, $_);
+        print "$_\n" for @values;
+    }
+}
