@@ -168,6 +168,8 @@ sub run_minmax {
 sub run_pick {
     my ($n) = @_;
 
+    die "pick <n> -- n is a required positive integer\n";
+
     my $ln = 1;
     my @picked;
 
