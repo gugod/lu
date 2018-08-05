@@ -213,3 +213,26 @@ sub run_untsv {
         print "$_\n" for @values;
     }
 }
+
+sub shuffle {
+    my @out = @_;
+    for my $i (0..$#out) {
+        my $j = rand(@out - $i) + $i;
+        @out[$i, $j] = @out[$j, $i];
+    }
+    return @out;
+}
+
+sub run_shuffle {
+    my ($bucket_size) = @_;
+    $bucket_size ||= 0;
+    my @bucket;
+    while (<STDIN>) {
+        push @bucket, $_;
+        if (@bucket > $bucket_size) {
+            print for shuffle(@bucket);
+            @bucket = ();
+        }
+    }
+    print for shuffle(@bucket);
+}
